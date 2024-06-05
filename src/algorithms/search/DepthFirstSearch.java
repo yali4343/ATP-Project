@@ -1,53 +1,68 @@
 package algorithms.search;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Stack;
 
+/**
+ * Class representing the Depth-First Search (DFS) algorithm.
+ * Extends the abstract class ASearchingAlgorithm.
+ */
 public class DepthFirstSearch extends ASearchingAlgorithm {
 
+    private Stack<AState> openList;
+
+    /**
+     * Constructor to initialize the DFS algorithm.
+     * Initializes the open list as a Stack.
+     */
+    public DepthFirstSearch() {
+        super();
+        this.openList = new Stack<AState>();
+    }
+
+    /**
+     * Solves the given search domain using the DFS algorithm.
+     *
+     * @param domain the search domain to solve
+     * @return a Solution object representing the solution to the search problem,
+     *         or null if the domain is null or no solution is found
+     */
     @Override
-    public Solution solve(ISearchable searchable) {
-        numberOfNodesEvaluated = 0;
-        Stack<AState> stack = new Stack<>();
-        Set<AState> visited = new HashSet<>();
-        Map<AState, AState> predecessors = new HashMap<>();
-
-        AState startState = searchable.getStartState();
-        AState goalState = searchable.getGoalState();
-        stack.push(startState);
-        visited.add(startState);
-
-        while (!stack.isEmpty()) {
-            AState currentState = stack.pop();
-            numberOfNodesEvaluated++;
-
-            if (currentState.equals(goalState)) {
-                return constructSolution(predecessors, goalState);
+    public Solution solve(ISearchable domain) {
+        if (domain == null) {
+            return null;
+        }
+        Solution solution;
+        AState start = domain.getStartState();
+        AState goal = domain.getGoalState();
+        this.openList.push(start);
+        AState curr;
+        while (!this.openList.isEmpty()) {
+            curr = this.openList.pop();
+            this.visitedNodes++;
+            if (curr.equals(goal)) {
+                this.openList.push(goal);
+                solution = new Solution(curr);
+                domain.resetSearch();
+                return solution;
             }
-
-            for (AState neighbor : searchable.getAllPossibleStates(currentState)) {
-                if (!visited.contains(neighbor)) {
-                    stack.push(neighbor);
-                    visited.add(neighbor);
-                    predecessors.put(neighbor, currentState);
-                }
+            ArrayList<AState> neighbors = domain.getAllPossibleStates(curr);
+            for (AState s : neighbors) {
+                this.openList.push(s);
+                s.setCameFrom(curr);
+                s.setCost(s.getCost() + curr.getCost());
             }
         }
         return null;
     }
 
-    private Solution constructSolution(Map<AState, AState> predecessors, AState goalState) {
-        Solution solution = new Solution();
-        AState currentState = goalState;
-        while (currentState != null) {
-            solution.addState(currentState);
-            currentState = predecessors.get(currentState);
-        }
-        Collections.reverse(solution.getSolutionPath());
-        return solution;
-    }
-
+    /**
+     * Gets the name of the searching algorithm.
+     *
+     * @return the name of the searching algorithm
+     */
     @Override
     public String getName() {
-        return "Depth First Search";
+        return "DepthFirstSearch";
     }
 }

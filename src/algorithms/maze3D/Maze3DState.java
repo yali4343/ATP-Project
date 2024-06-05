@@ -1,48 +1,59 @@
 package algorithms.maze3D;
-
 import algorithms.search.AState;
 
-import java.util.Objects;
 
+/**
+ * Class representing a state in a 3D maze search problem.
+ * Extends the abstract class AState.
+ */
 public class Maze3DState extends AState {
-    private int depth;
-    private int row;
-    private int column;
+    private Position3D state;
 
-    public Maze3DState(int depth, int row, int column) {
-        super("{" + depth + "," + row + "," + column + "}");
-        this.depth = depth;
-        this.row = row;
-        this.column = column;
+    /**
+     * Constructor to initialize a 3D maze state with the specified position.
+     *
+     * @param pos the position of the maze state
+     */
+    public Maze3DState(Position3D pos) {
+        super(pos.toString());
+        this.state = pos;
     }
 
-    public int getDepth() {
-        return depth;
-    }
-
+    /**
+     * Gets the row index of the 3D maze state.
+     *
+     * @return the row index
+     */
     public int getRow() {
-        return row;
+        return state.getRowIndex();
     }
 
-    public int getColumn() {
-        return column;
+    /**
+     * Gets the column index of the 3D maze state.
+     *
+     * @return the column index
+     */
+    public int getCol() {
+        return state.getColumnIndex();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Maze3DState that = (Maze3DState) obj;
-        return depth == that.depth && row == that.row && column == that.column;
+    /**
+     * Gets the depth index of the 3D maze state.
+     *
+     * @return the depth index
+     */
+    public int getDepth() {
+        return state.getDepthIndex();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(depth, row, column);
-    }
-
+    /**
+     * Returns a string representation of the 3D maze state.
+     *
+     * @return a string representation of the 3D maze state
+     */
     @Override
     public String toString() {
-        return "{" + depth + "," + row + "," + column + "}";
+        return state.toString();
     }
 }
+

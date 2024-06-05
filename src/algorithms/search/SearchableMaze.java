@@ -1,66 +1,164 @@
 package algorithms.search;
 
-import algorithms.mazeGenerators.*;
-
+import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.Position;
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Class representing a searchable maze.
+ * Implements the ISearchable interface.
+ */
 public class SearchableMaze implements ISearchable {
     private Maze maze;
+    private byte[][] MazeMatrix;
 
+    /**
+     * Constructor to initialize a searchable maze with a specified maze.
+     *
+     * @param maze the maze to be made searchable
+     */
     public SearchableMaze(Maze maze) {
         this.maze = maze;
+        initMatrix();
     }
 
-    @Override
-    public AState getStartState() {
-        Position startPosition = maze.getStartPosition();
-        return new MazeState(startPosition.getRowIndex(), startPosition.getColumnIndex());
-    }
-
-    @Override
-    public AState getGoalState() {
-        Position goalPosition = maze.getGoalPosition();
-        return new MazeState(goalPosition.getRowIndex(), goalPosition.getColumnIndex());
-    }
-
-    @Override
-    public List<AState> getAllPossibleStates(AState state) {
-        List<AState> possibleStates = new ArrayList<>();
-        MazeState mazeState = (MazeState) state;
-        int row = mazeState.getRow();
-        int column = mazeState.getColumn();
-
-        // Define movements: up, down, left, right, and diagonals
-        int[][] movements = {
-                {-1, 0}, {1, 0}, {0, -1}, {0, 1},    // up, down, left, right
-                {-1, -1}, {-1, 1}, {1, -1}, {1, 1}   // diagonals
-        };
-
-        for (int[] movement : movements) {
-            int newRow = row + movement[0];
-            int newColumn = column + movement[1];
-
-            if (isValidMove(row, column, newRow, newColumn)) {
-                possibleStates.add(new MazeState(newRow, newColumn));
+    /**
+     * Initializes the maze matrix to track visited positions.
+     * Sets all positions to 0 (unvisited).
+     */
+    private void initMatrix() {
+        if (this.maze == null) {
+            return;
+        }
+        this.MazeMatrix = new byte[this.maze.getRows()][this.maze.getColumns()];
+        for (int i = 0; i < maze.getRows(); i++) {
+            for (int j = 0; j < maze.getColumns(); j++) {
+                this.MazeMatrix[i][j] = 0;
             }
         }
-        return possibleStates;
     }
 
-    private boolean isValidMove(int currentRow, int currentColumn, int newRow, int newColumn) {
-        if (newRow < 0 || newColumn < 0 || newRow >= maze.getRows() || newColumn >= maze.getColumns()) {
-            return false;
+    /**
+     * Gets the start state of the maze.
+     *
+     * @return the start state of the maze as a MazeState object
+     */
+    @Override
+    public AState getStartState() {
+        if (this.maze == null) {
+            return null;
         }
-        if (maze.getMaze()[newRow][newColumn] == 1) {
-            return false;
-        }
+        return new MazeState(this.maze.getStartPosition());
+    }
 
-        // Check for diagonal movement validity (R-shaped movement)
-        if (Math.abs(currentRow - newRow) == 1 && Math.abs(currentColumn - newColumn) == 1) {
-            return (maze.getMaze()[currentRow][newColumn] == 0 && maze.getMaze()[newRow][currentColumn] == 0);
+    /**
+     * Gets the goal state of the maze.
+     *
+     * @return the goal state of the maze as a MazeState object
+     */
+    @Override
+    public AState getGoalState() {
+        if (this.maze == null) {
+            return null;
         }
+        return new MazeState(this.maze.getGoalPosition());
+    }
 
-        return true;
+    /**
+     * Gets all possible states that can be reached from the given state.
+     *
+     * @param s the current state
+     * @return an ArrayList of possible states that can be reached from the given state
+     */
+    @Override
+    public ArrayList<AState> getAllPossibleStates(AState s) {
+        if (s == null || this.maze == null) {
+            return null;
+        }
+        ArrayList<AState> solutions = new ArrayList<>();
+        int curr_col = ((MazeState) s).getCol();
+        int curr_row = ((MazeState) s).getRow();
+        int left = curr_col - 1;
+        int right = curr_col + 1;
+        int up = curr_row - 1;
+        int down = curr_row + 1;
+
+        if (!maze.isPositionWallOrEmpty(down, curr_col)) {
+            allDownAndUpOptions(solutions, down, curr_col);
+        }
+        if (!maze.isPositionWallOrEmpty(curr_row, right)) {
+            allLeftAndRightOptions(solutions, curr_row, right);
+        }
+        if (!maze.isPositionWallOrEmpty(up, curr_col)) {
+            allDownAndUpOptions(solutions, up, curr_col);
+        }
+        if (!maze.isPositionWallOrEmpty(curr_row, left)) {
+            allLeftAndRightOptions(solutions, curr_row, left);
+        }
+        return solutions;
+    }
+
+    /**
+     * Adds all possible down and up moves to the list of solutions.
+     *
+     * @param solutions the list of solutions
+     * @param row the current row index
+     * @param col the current column index
+     */
+    private void allDownAndUpOptions(ArrayList<AState> solutions, int row, int col) {
+        if (MazeMatrix[row][col] == 0) {
+            MazeMatrix[row][col] = 1;
+            MazeState state = new MazeState(new Position(row, col));
+            state.setCost(10);
+            solutions.add(state);
+        }
+        if (!maze.isPositionWallOrEmpty(row, col + 1) && MazeMatrix[row][col + 1] == 0) {
+            MazeMatrix[row][col + 1] = 1;
+            MazeState state = new MazeState(new Position(row, col + 1));
+            state.setCost(15);
+            solutions.add(state);
+        }
+        if (!maze.isPositionWallOrEmpty(row, col - 1) && MazeMatrix[row][col - 1] == 0) {
+            MazeMatrix[row][col - 1] = 1;
+            MazeState state = new MazeState(new Position(row, col - 1));
+            state.setCost(15);
+            solutions.add(state);
+        }
+    }
+
+    /**
+     * Adds all possible left and right moves to the list of solutions.
+     *
+     * @param solutions the list of solutions
+     * @param row the current row index
+     * @param col the current column index
+     */
+    private void allLeftAndRightOptions(ArrayList<AState> solutions, int row, int col) {
+        if (MazeMatrix[row][col] == 0) {
+            MazeMatrix[row][col] = 1;
+            MazeState state = new MazeState(new Position(row, col));
+            state.setCost(10);
+            solutions.add(state);
+        }
+        if (!maze.isPositionWallOrEmpty(row + 1, col) && MazeMatrix[row + 1][col] == 0) {
+            MazeMatrix[row + 1][col] = 1;
+            MazeState state = new MazeState(new Position(row + 1, col));
+            state.setCost(15);
+            solutions.add(state);
+        }
+        if (!maze.isPositionWallOrEmpty(row - 1, col) && MazeMatrix[row - 1][col] == 0) {
+            MazeMatrix[row - 1][col] = 1;
+            MazeState state = new MazeState(new Position(row - 1, col));
+            state.setCost(15);
+            solutions.add(state);
+        }
+    }
+
+    /**
+     * Resets the maze matrix to its initial state.
+     */
+    @Override
+    public void resetSearch() {
+        initMatrix();
     }
 }

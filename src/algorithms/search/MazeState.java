@@ -1,40 +1,49 @@
 package algorithms.search;
 
-import java.util.Objects;
+import algorithms.mazeGenerators.Position;
 
+/**
+ * Class representing a state in a maze search problem.
+ * Extends the abstract class AState.
+ */
 public class MazeState extends AState {
-    private int row;
-    private int column;
+    private Position state;
 
-    public MazeState(int row, int column) {
-        super("{" + row + "," + column + "}");
-        this.row = row;
-        this.column = column;
+    /**
+     * Constructor to initialize a maze state with the specified position.
+     *
+     * @param state the position of the maze state
+     */
+    public MazeState(Position state) {
+        super(state.toString());
+        this.state = state;
     }
 
+    /**
+     * Gets the row index of the maze state.
+     *
+     * @return the row index
+     */
     public int getRow() {
-        return row;
+        return this.state.getRowIndex();
     }
 
-    public int getColumn() {
-        return column;
+    /**
+     * Gets the column index of the maze state.
+     *
+     * @return the column index
+     */
+    public int getCol() {
+        return this.state.getColumnIndex();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        MazeState mazeState = (MazeState) obj;
-        return row == mazeState.row && column == mazeState.column;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(row, column);
-    }
-
+    /**
+     * Returns a string representation of the maze state.
+     *
+     * @return a string representation of the maze state
+     */
     @Override
     public String toString() {
-        return "{" + row + "," + column + "}";
+        return state.toString();
     }
 }
