@@ -14,7 +14,7 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
      */
     public BreadthFirstSearch() {
         super();
-        this.openList = new LinkedList<AState>();
+        this.aStateQueue = new LinkedList<AState>();
     }
 
     /**
@@ -26,29 +26,46 @@ public class BreadthFirstSearch extends ASearchingAlgorithm {
      */
     @Override
     public Solution solve(ISearchable domain) {
+        // Check if the domain is null and return null if it is
         if (domain == null) {
             return null;
         }
+
         Solution solution;
+        // Get the start state from the domain
         AState start = domain.getStartState();
+        // Get the goal state from the domain
         AState goal = domain.getGoalState();
-        this.openList.add(start);
+        // Add the start state to the queue
+        this.aStateQueue.add(start);
+
         AState curr;
-        while (!this.openList.isEmpty()) {
-            curr = popOpenList();
+        // Loop until the queue is empty
+        while (!this.aStateQueue.isEmpty()) {
+            // Pop the current state from the queue
+            curr = popRegularQueue();
+            // Check if the current state is the goal state
             if (curr.equals(goal)) {
-                this.openList.add(goal);
+                // If goal is found, add it to the queue and create the solution
+                this.aStateQueue.add(goal);
                 solution = new Solution(curr);
+                // Reset the domain's search status
                 domain.resetSearch();
+                // Return the found solution
                 return solution;
             }
+            // Get all possible states from the current state
             ArrayList<AState> neighbors = domain.getAllPossibleStates(curr);
             for (AState s : neighbors) {
+                // Update the cost of the neighbor state
                 s.setCost(s.getCost() + curr.getCost());
-                this.openList.add(s);
+                // Add the neighbor state to the queue
+                this.aStateQueue.add(s);
+                // Set the current state as the predecessor of the neighbor state
                 s.setCameFrom(curr);
             }
         }
+        // Return null if no solution is found
         return null;
     }
 

@@ -7,7 +7,7 @@ public class Maze3D {
     private int col;
     private int row;
     private int depth;
-    private int[][][] array;
+    private int[][][] maze;
 
     /**
      * Constructor to initialize a 3D maze with specified depth, rows, and columns.
@@ -17,7 +17,7 @@ public class Maze3D {
      * @param col the number of columns in the maze
      */
     public Maze3D(int depth, int row, int col) {
-        array = new int[depth][row][col];
+        maze = new int[depth][row][col];
         this.row = row;
         this.col = col;
         this.depth = depth;
@@ -36,7 +36,7 @@ public class Maze3D {
             System.out.println("Invalid Input: depth " + depth + " row " + row + " col " + col);
             return;
         }
-        array[depth][row][col] = value;
+        maze[depth][row][col] = value;
     }
 
     /**
@@ -66,7 +66,7 @@ public class Maze3D {
         if (!this.indexValidation(depth, row, col)) {
             return true;
         }
-        return this.array[depth][row][col] == 1;
+        return this.maze[depth][row][col] == 1;
     }
 
     /**
@@ -105,7 +105,7 @@ public class Maze3D {
             System.out.println("Layer " + k + ":");
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    System.out.print(array[k][i][j] + " ");
+                    System.out.print(maze[k][i][j] + " ");
                 }
                 System.out.println();
             }
@@ -136,7 +136,7 @@ public class Maze3D {
      *
      * @return the maze as a 3D array
      */
-    public int[][][] getMap() {
-        return array;
+    public int[][][] getMaze() {
+        return maze;
     }
 }

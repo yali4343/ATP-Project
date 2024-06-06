@@ -9,7 +9,7 @@ import java.util.Stack;
  */
 public class DepthFirstSearch extends ASearchingAlgorithm {
 
-    private Stack<AState> openList;
+    private Stack<AState> aStateStack;
 
     /**
      * Constructor to initialize the DFS algorithm.
@@ -17,7 +17,7 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
      */
     public DepthFirstSearch() {
         super();
-        this.openList = new Stack<AState>();
+        this.aStateStack = new Stack<AState>();
     }
 
     /**
@@ -29,30 +29,48 @@ public class DepthFirstSearch extends ASearchingAlgorithm {
      */
     @Override
     public Solution solve(ISearchable domain) {
+        // Check if the domain is null and return null if it is
         if (domain == null) {
             return null;
         }
+
         Solution solution;
+        // Get the start state from the domain
         AState start = domain.getStartState();
+        // Get the goal state from the domain
         AState goal = domain.getGoalState();
-        this.openList.push(start);
+        // Push the start state onto the stack
+        this.aStateStack.push(start);
+
         AState curr;
-        while (!this.openList.isEmpty()) {
-            curr = this.openList.pop();
+        // Loop until the stack is empty
+        while (!this.aStateStack.isEmpty()) {
+            // Pop the current state from the stack
+            curr = this.aStateStack.pop();
+            // Increment the count of visited nodes
             this.visitedNodes++;
+            // Check if the current state is the goal state
             if (curr.equals(goal)) {
-                this.openList.push(goal);
+                // If goal is found, push it onto the stack and create the solution
+                this.aStateStack.push(goal);
                 solution = new Solution(curr);
+                // Reset the domain's search status
                 domain.resetSearch();
+                // Return the found solution
                 return solution;
             }
+            // Get all possible states from the current state
             ArrayList<AState> neighbors = domain.getAllPossibleStates(curr);
             for (AState s : neighbors) {
-                this.openList.push(s);
+                // Push the neighbor state onto the stack
+                this.aStateStack.push(s);
+                // Set the current state as the predecessor of the neighbor state
                 s.setCameFrom(curr);
+                // Update the cost of the neighbor state
                 s.setCost(s.getCost() + curr.getCost());
             }
         }
+        // Return null if no solution is found
         return null;
     }
 

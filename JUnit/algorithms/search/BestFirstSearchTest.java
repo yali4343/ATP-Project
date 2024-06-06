@@ -16,17 +16,28 @@ class BestFirstSearchTest {
         BestFirstSearch best = new BestFirstSearch();
         assertEquals("BestFirstSearch",best.getName());
     }
+
     @Test
     void testType(){
         BestFirstSearch best = new BestFirstSearch();
-        assertTrue(best.openList instanceof PriorityQueue);
+        assertTrue(best.aStateQueue instanceof PriorityQueue);
     }
+
     @Test
     void testNullSolve(){
         BestFirstSearch best = new BestFirstSearch();
         Solution sol = best.solve(null);
         assertNull(sol);
     }
+
+    @Test
+    void testInvalidColumnsMaze(){
+        IMazeGenerator im = new MyMazeGenerator();
+        Maze m = im.generate(100,-50);
+        assertEquals(2,m.getColumns());
+        assertEquals(100,m.getRows());
+    }
+
     @Test
     void testMinusMaze(){
         IMazeGenerator im = new MyMazeGenerator();
@@ -34,4 +45,21 @@ class BestFirstSearchTest {
         assertEquals(2,m.getColumns());
         assertEquals(2,m.getRows());
     }
+
+    @Test
+    void testInvalidMaze(){
+        IMazeGenerator im = new MyMazeGenerator();
+        Maze m = im.generate(0,0);
+        assertEquals(2,m.getColumns());
+        assertEquals(2,m.getRows());
+    }
+
+    @Test
+    void testInvalidRowsMaze(){
+        IMazeGenerator im = new MyMazeGenerator();
+        Maze m = im.generate(-50,100);
+        assertEquals(100,m.getColumns());
+        assertEquals(2,m.getRows());
+    }
+
 }

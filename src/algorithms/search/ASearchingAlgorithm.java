@@ -7,7 +7,7 @@ import java.util.Queue;
  */
 public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
 
-    protected Queue<AState> openList;
+    protected Queue<AState> aStateQueue;
     protected int visitedNodes;
 
     /**
@@ -32,9 +32,9 @@ public abstract class ASearchingAlgorithm implements ISearchingAlgorithm {
      *
      * @return the next state from the open list
      */
-    protected AState popOpenList() {
+    protected AState popRegularQueue() {
         this.visitedNodes++;
-        return this.openList.poll();
+        return this.aStateQueue.poll();
     }
 
     /**

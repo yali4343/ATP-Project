@@ -5,7 +5,7 @@ public class BestFirstSearch extends BreadthFirstSearch {
 
     public BestFirstSearch() {
         super();
-        this.openList = new PriorityQueue<AState>(new AStateComparator());
+        this.aStateQueue = new PriorityQueue<AState>(new AStateComparator());
     }
 
     @Override

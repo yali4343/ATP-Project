@@ -26,12 +26,12 @@ public class MyMazeGenerator extends AMazeGenerator {
         col = Math.max(col, 2);
 
         // Create a maze full of walls
-        Maze ret = new Maze(row, col);
+        Maze maze = new Maze(row, col);
 
         // Initialize the maze with walls
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                ret.changePositionValue(i, j, 1);
+                maze.changePositionValue(i, j, 1);
             }
         }
 
@@ -39,29 +39,29 @@ public class MyMazeGenerator extends AMazeGenerator {
         List<Position> wall_list = new ArrayList<>();
 
         // Start the maze from position (0, 0)
-        ret.changePositionValue(0, 0, 0);
+        maze.changePositionValue(0, 0, 0);
 
         // Add initial walls to the list
         wall_list.add(new Position(0, 1));
         wall_list.add(new Position(1, 0));
 
         // Run Prim's algorithm from the start position
-        primAlg(ret, wall_list);
+        primAlg(maze, wall_list);
 
         // Ensure the goal position is reachable
         int choose = rand.nextInt(2);
         switch (choose) {
             case 0:
-                ret.changePositionValue(row - 1, col - 2, 0);
+                maze.changePositionValue(row - 1, col - 2, 0);
                 break;
             case 1:
-                ret.changePositionValue(row - 2, col - 1, 0);
+                maze.changePositionValue(row - 2, col - 1, 0);
                 break;
         }
-        ret.changePositionValue(0, 0, 0);
-        ret.changePositionValue(row - 1, col - 1, 0);
+        maze.changePositionValue(0, 0, 0);
+        maze.changePositionValue(row - 1, col - 1, 0);
 
-        return ret;
+        return maze;
     }
 
     /**
@@ -91,6 +91,29 @@ public class MyMazeGenerator extends AMazeGenerator {
     }
 
     /**
+     * Adds the neighboring walls of a given cell to the wall list.
+     *
+     * @param maze the Maze object being generated
+     * @param wall_list the list of wall positions to add to
+     * @param curr_row the current row index
+     * @param curr_col the current column index
+     */
+    public void addWalls(Maze maze, List<Position> wall_list, int curr_row, int curr_col) {
+        if (maze.isPositionWall(curr_row, curr_col + 1) && !wall_list.contains(new Position(curr_row, curr_col + 1))) {
+            wall_list.add(new Position(curr_row, curr_col + 1));
+        }
+        if (maze.isPositionWall(curr_row, curr_col - 1) && !wall_list.contains(new Position(curr_row, curr_col - 1))) {
+            wall_list.add(new Position(curr_row, curr_col - 1));
+        }
+        if (maze.isPositionWall(curr_row + 1, curr_col) && !wall_list.contains(new Position(curr_row + 1, curr_col))) {
+            wall_list.add(new Position(curr_row + 1, curr_col));
+        }
+        if (maze.isPositionWall(curr_row - 1, curr_col) && !wall_list.contains(new Position(curr_row - 1, curr_col))) {
+            wall_list.add(new Position(curr_row - 1, curr_col));
+        }
+    }
+
+    /**
      * Checks the surrounding positions of a given cell in the maze.
      *
      * @param maze the Maze object being checked
@@ -115,26 +138,5 @@ public class MyMazeGenerator extends AMazeGenerator {
         return count;
     }
 
-    /**
-     * Adds the neighboring walls of a given cell to the wall list.
-     *
-     * @param maze the Maze object being generated
-     * @param wall_list the list of wall positions to add to
-     * @param curr_row the current row index
-     * @param curr_col the current column index
-     */
-    public void addWalls(Maze maze, List<Position> wall_list, int curr_row, int curr_col) {
-        if (maze.isPositionWall(curr_row, curr_col + 1) && !wall_list.contains(new Position(curr_row, curr_col + 1))) {
-            wall_list.add(new Position(curr_row, curr_col + 1));
-        }
-        if (maze.isPositionWall(curr_row, curr_col - 1) && !wall_list.contains(new Position(curr_row, curr_col - 1))) {
-            wall_list.add(new Position(curr_row, curr_col - 1));
-        }
-        if (maze.isPositionWall(curr_row + 1, curr_col) && !wall_list.contains(new Position(curr_row + 1, curr_col))) {
-            wall_list.add(new Position(curr_row + 1, curr_col));
-        }
-        if (maze.isPositionWall(curr_row - 1, curr_col) && !wall_list.contains(new Position(curr_row - 1, curr_col))) {
-            wall_list.add(new Position(curr_row - 1, curr_col));
-        }
-    }
+
 }
