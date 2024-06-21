@@ -20,6 +20,36 @@ public class Maze {
         this.col = col;
     }
 
+    public Maze(byte[] decompressedMaze) {
+        boolean row=true;
+        boolean col=false;
+        int index =0;
+        // we need to extract the rows and colums
+        for(int i=0;i<decompressedMaze.length;i++){
+            if(decompressedMaze[i]!=-2 &&row){
+                this.row+=decompressedMaze[i] & 0xFF;
+            }
+            else if(decompressedMaze[i]==-2 && row){
+                row=false;
+                col=true;
+            }
+            else if(decompressedMaze[i]!=-2 &&col){
+                this.col+=decompressedMaze[i] & 0xFF;
+            }
+            else if(col && decompressedMaze[i]==-2){
+                index=i+1;
+                break;
+            }
+        }
+        maze = new int[this.row][this.col];
+        for (int i = 0; i < this.row; i++) {
+            for (int j = 0; j < this.col; j++) {
+                maze[i][j] = decompressedMaze[index];
+                index++;
+            }
+        }
+    }
+
     /**
      * A function to put values in the maze at a specific index.
      *
@@ -147,5 +177,51 @@ public class Maze {
             }
             System.out.println();
         }
+    }
+
+
+    public byte[] toByteArray() {
+        int num_rows=this.row/253+1;
+        int num_cols=this.col/253+1;
+        int curr_row=this.row;
+        int curr_col=this.col;
+        byte[] mazeOfBytes=new byte[num_rows+num_cols+2+col*row];
+        //fill in the num of rows
+        // and columns
+        int index=0;
+        for (int i = 0; i < num_rows; i++) {
+            if(curr_row>=253){
+                mazeOfBytes[index]=(byte)253;
+                curr_row-=253;
+                index++;
+            }
+            else if (curr_row!=0){
+                mazeOfBytes[index]=(byte)curr_row;
+                index++;
+            }
+        }
+        //tell us we finished read rows
+        mazeOfBytes[index]=(byte)-2;
+        index++;
+        for (int i = 0; i < num_cols; i++) {
+            if (curr_col >= 253) {
+                mazeOfBytes[index] = (byte) 253;
+                curr_col -= 253;
+                index++;
+            } else if (curr_col != 0) {
+                mazeOfBytes[index] = (byte) curr_col;
+                index++;
+            }
+        }
+        //tell us we finished read colums
+        mazeOfBytes[index]=(byte)-2;
+        index++;
+        for(int i=0;i<this.row;i++){
+            for(int j=0;j<this.col;j++){
+                mazeOfBytes[index]=(byte)maze[i][j];
+                index++;
+            }
+        }
+        return mazeOfBytes;
     }
 }
