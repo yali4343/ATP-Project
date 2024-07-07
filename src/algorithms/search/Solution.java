@@ -1,12 +1,13 @@
 package algorithms.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Class representing a solution to a search problem.
  * Contains the goal state and provides a method to retrieve the solution path.
  */
-public class Solution {
+public class Solution implements Serializable {
 
     private AState goal;
 

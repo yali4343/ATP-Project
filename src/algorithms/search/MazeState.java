@@ -2,6 +2,8 @@ package algorithms.search;
 
 import algorithms.mazeGenerators.Position;
 
+import java.io.Serializable;
+
 /**
  * Class representing a state in a maze search problem.
  * Extends the abstract class AState.

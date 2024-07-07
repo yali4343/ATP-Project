@@ -1,11 +1,12 @@
 package algorithms.search;
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Abstract class to represent a state in a search algorithm.
  * Contains information about the state, its cost, and the state it came from.
  */
-public abstract class AState {
+public abstract class AState implements Serializable {
     private String state;
     protected int cost;
     private AState cameFrom;
