@@ -1,2 +1,13 @@
+This dynamic project serves as a foundational element of the Advanced Topics in Programming course. It showcases a wide range of programming concepts, including:
 
-This dynamic project serves as a foundational element of the Advanced Topics in Programming course, showcasing a wide range of programming concepts. It highlights the elegant implementation of design patterns, effective handling of multi-threading challenges, and a strong commitment to SOLID principles. Furthermore, the project demonstrates mastery of various search algorithms, including breadth-first search (BFS), depth-first search (DFS), and uniform cost search (UCS). This endeavor reflects a comprehensive understanding of programming paradigms and their practical applications.
+- **Design Patterns**: Elegant implementation of various design patterns.
+- **Multi-Threading**: Effective handling of multi-threading challenges.
+- **SOLID Principles**: A strong commitment to SOLID principles.
+
+Furthermore, the project demonstrates mastery of various search algorithms, such as:
+
+- Breadth-First Search (BFS)
+- Depth-First Search (DFS)
+- Uniform Cost Search (UCS)
+
+This endeavor reflects a comprehensive understanding of programming paradigms and their practical applications.
